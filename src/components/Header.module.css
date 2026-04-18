@@ -1,0 +1,45 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 900;
+  color: #2563EB;
+  cursor: pointer;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.btn {
+  padding: 8px 20px;
+  border-radius: 50px;
+  border: none;
+  background: #ffffff;
+  box-shadow: 6px 6px 12px #dddddd, -6px -6px 12px #f0f0f0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A1A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  box-shadow: 4px 4px 8px #dddddd, -4px -4px 8px #ffffff;
+}
+
+.btn:active {
+  box-shadow: inset 3px 3px 6px #dddddd, inset -3px -3px 6px #ffffff;
+}

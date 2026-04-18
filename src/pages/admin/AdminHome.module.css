@@ -1,0 +1,185 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout {
+  display: flex;
+  flex: 1;
+}
+
+.main {
+  flex: 1;
+  background-color: #FAF8FF;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1B21;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.cardRow {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+/* 요약 카드 */
+.summaryCard {
+  flex: 1;
+  max-width: 300px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardLabel {
+  font-size: 15px;
+  color: #262C3D;
+  font-weight: 600;
+}
+
+.cardIconImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.cardIconImgRound {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.cardNum {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1A1B21;
+}
+
+.cardSub {
+  font-size: 14px;
+  color: #1A1B21;
+  font-weight: 500;
+}
+
+/* 하단 카드 */
+.cardRowBottom {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+.infoCard {
+  flex: 1;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.infoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A1B21;
+}
+
+/* 최근 7일 */
+.dailyList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dailyRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dailyDate {
+  font-size: 13px;
+  color: #1A1B21;
+  font-weight: 500;
+  min-width: 90px;
+}
+
+.barWrap {
+  flex: 1;
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: #1A1B21;
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+
+.dailyCount {
+  font-size: 13px;
+  color: #1A1B21;
+  font-weight: 500;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* 계약서 유형별 */
+.typeList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.typeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.typeLabel {
+  font-size: 14px;
+  color: #1A1B21;
+  font-weight: 500;
+}
+
+.typeCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A1B21;
+}
+
+.empty {
+  font-size: 13px;
+  color: #adb5bd;
+  text-align: center;
+  padding: 16px 0;
+}
