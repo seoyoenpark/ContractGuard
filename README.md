@@ -30,7 +30,7 @@ src/
 └── assets/                  # 이미지
 ```
 
-### 4.1 응답 포맷 전제
+### 3. 응답 포맷 전제
 
 프론트는 설계서 7.3절에 따라 모든 응답이 아래 형태라고 가정하고 파싱합니다.
 
@@ -50,7 +50,7 @@ src/
 - `GET /api/contracts/:id/analyze-status` → top-level `analyze_status` 객체 (설계서)
 - `GET /api/contracts/:id/result` → top-level `contract_id`, `clause_summaries`, `toxic_assessment` 등
 
-### 4.2 사용 중인 엔드포인트 목록
+### 4. 사용 중인 엔드포인트 목록
 
 #### 인증 / 사용자 (`src/api/auth.js`)
 
@@ -92,7 +92,7 @@ src/
 | DELETE | `/api/admin/users/:id` | 회원 강제 탈퇴 | UserList |
 | GET | `/api/admin/contracts/errors` | 에러 로그 조회 | Stats |
 
-### 4.3 목(Mock) API 사용 방법
+### 5. 목(Mock) API 사용 방법
 
 백엔드 미구현 기간에는 `contract.mock.js`가 axios와 동일한 `{status, data}` 형태의 응답을 반환합니다. 아래 파일의 import 경로만 교체하면 바로 동작합니다.
 
@@ -110,7 +110,7 @@ src/
 
 ---
 
-## 5. 라우트 구성
+## 6. 라우트 구성
 
 | 경로 | 페이지 | 권한 |
 |---|---|---|
