@@ -8,7 +8,7 @@ import styles from './Mypage.module.css';
 function Mypage() {
   const navigate = useNavigate();
 
-  // 설계서 p.77 GET /api/users/me 응답 user 필드 기반
+  // GET /api/users/me 응답 user 필드 기반
   // { id, name, gender, birthDate, email, emailVerified, createdAt, updatedAt }
   const [form, setForm] = useState({
     name: '',
@@ -21,7 +21,6 @@ function Mypage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // 내 정보 조회: cancel 플래그로 race condition 방지
   useEffect(() => {
     let cancelled = false;
 
@@ -30,7 +29,6 @@ function Mypage() {
         setLoading(true);
         setError('');
         const res = await getMyInfo();
-        // 설계서 p.77: top-level user (data 래핑 없음)
         const u = res.data.user;
         if (!cancelled && u) {
           setForm({
@@ -56,7 +54,7 @@ function Mypage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // PATCH /api/users/me — 설계서 p.101 스펙대로 name, gender 만 전송
+  // PATCH /api/users/me —  name, gender 만 전송
   const handleUpdate = async () => {
     if (!form.name.trim()) {
       setError('이름을 입력해주세요.');
@@ -97,7 +95,7 @@ function Mypage() {
                 <div className={styles.fieldBox}>
                   <span className={styles.fieldLabel}>이름</span>
                   <input
-                    className={styles.fieldInput}
+                    className={styles.fieldModifyInput}
                     name="name"
                     value={form.name}
                     onChange={handleChange}
@@ -105,14 +103,14 @@ function Mypage() {
                   />
                 </div>
 
-                {/* 아이디: 읽기 전용 (설계서 PATCH 스펙에 없음) */}
+                {/* 아이디: 읽기 전용 */}
                 <div className={styles.fieldBox}>
                   <span className={styles.fieldLabel}>아이디</span>
                   <input
                     className={styles.fieldInput}
                     value={form.id}
                     readOnly
-                    placeholder="아이디를 입력해주세요."
+                    placeholder="아이디"
                   />
                 </div>
 
@@ -130,12 +128,21 @@ function Mypage() {
                   </div>
                 </div>
 
-                {/* 비밀번호 변경: 설계서 PATCH 스펙에 없으므로
-                    /api/auth/password-reset/... 재설정 플로우로 안내 */}
+                {/* 비밀번호 */}
                 <div className={styles.fieldBox}>
                   <span className={styles.fieldLabel}>비밀번호</span>
+                  <input
+                    className={styles.fieldInput}
+                    value="******"
+                    readOnly
+                  />
+                </div>
+
+                 {/* 비밀번호 재설정 연결 */}
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>비밀번호 재설정</span>
                   <button
-                    className={styles.secondaryBtn}
+                    className={styles.resetLinkBtn}
                     onClick={() => navigate('/reset-password')}
                     type="button"
                   >
@@ -143,7 +150,7 @@ function Mypage() {
                   </button>
                 </div>
 
-                {/* 생년월일: 읽기 전용 (설계서 PATCH 스펙에 없음) */}
+                {/* 생년월일: 읽기 전용 */}
                 <div className={styles.fieldBox}>
                   <span className={styles.fieldLabel}>생년월일</span>
                   <input

@@ -37,7 +37,6 @@ function InspectionHistory() {
     e.stopPropagation();
     if (!window.confirm('검사 기록을 삭제하시겠습니까?')) return;
     try {
-      // 설계서 응답: { success, result_code: 200, data: { contract_id, deleted_at } }
       const res = await deleteContract(contractId);
       const deletedId = res.data?.data?.contract_id ?? contractId;
       setList((prev) => prev.filter((c) => c.contract_id !== deletedId));
@@ -46,7 +45,6 @@ function InspectionHistory() {
     }
   };
 
-  // 설계서 contracts[].status 기반 배지 메타 (succeeded / failed / processing 등)
   const statusMeta = (status) => {
     switch (status) {
       case 'succeeded':  return { label: '완료',    className: styles.statusDone };

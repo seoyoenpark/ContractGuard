@@ -5,12 +5,6 @@ import Sidebar from '../../components/Sidebar';
 import { uploadContract, analyzeContract, getAnalyzeStatus, getContractResult } from '../../api/contract.mock';
 import styles from './ContractInspect.module.css';
 
-/**
- * PDF.js 워커 설정 (Vite/webpack5 기준).
- * CRA 등 import.meta.url 미지원 환경이면 아래 한 줄로 교체:
- *   pdfjs.GlobalWorkerOptions.workerSrc =
- *     `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
- */
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url,
@@ -18,7 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 /**
  * 내부 전용 PdfViewer 컴포넌트
- * - file: PDF 소스 (blob URL 권장)
+ * - file: PDF 소스
  * - activeHighlight: { page_number, bbox_norm:{x,y,w,h} } - 포커싱할 하이라이트
  */
 function PdfViewer({ file, activeHighlight }) {
@@ -157,7 +151,6 @@ function ContractInspect() {
     pollingRef.current = setInterval(async () => {
       try {
         const statusRes = await getAnalyzeStatus(id);
-        // 설계서 필드명: analyze_status.overall_status
         const status = statusRes.data?.analyze_status?.overall_status;
 
         if (status === 'succeeded') {

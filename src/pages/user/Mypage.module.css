@@ -88,6 +88,17 @@
   font-weight: 500;
 }
 
+.fieldModifyInput {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #000000;
+  font-weight: 500;
+  padding: 0;
+  background: transparent;
+  width: 100%;
+}
+
 .fieldInput {
   border: none;
   outline: none;
@@ -199,22 +210,21 @@
   padding: 32px 0;
 }
 
-/* 보조 액션 버튼 (비밀번호 재설정하기 등) */
-.secondaryBtn {
+/* 비밀번호 재설정 */
+.resetLinkBtn {
   align-self: flex-start;
-  padding: 6px 14px;
-  margin-top: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  border: none;
+  background: transparent;
+  padding: 2px 0;
+  font-size: 14px;
   color: #2563EB;
-  background: #ffffff;
-  border: 1px solid #2563EB;
-  border-radius: 14px;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.2s ease;
+  text-decoration: none;
+  text-underline-offset: 2px;
 }
-
-.secondaryBtn:hover {
-  background-color: #2563EB;
-  color: #ffffff;
+ 
+.resetLinkBtn:hover {
+  color: #1D4ED8;
 }
+ 

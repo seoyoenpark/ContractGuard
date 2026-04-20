@@ -11,7 +11,7 @@ import styles from './AdminHome.module.css';
 function AdminHome() {
   const navigate = useNavigate();
 
-  /* ── 더미 데이터 (설계서 p.104 /api/admin/status/summary 응답 스펙과 일치) ── */
+  /* ── 더미 데이터 ── */
   const [summary, setSummary] = useState({
     users: {
       total: 120,
@@ -19,7 +19,6 @@ function AdminHome() {
     },
     contracts: {
       analyzed_total: 42,
-      // 설계서 스펙: 배열 형태 [{ contract_type, count }]
       by_contract_type: [
         { contract_type: '근로계약서', count: 10 },
         { contract_type: '비밀유지계약서', count: 3 },
@@ -31,7 +30,6 @@ function AdminHome() {
     toxic_detection: {
       detection_events_total: 18,
     },
-    // 설계서 스펙: summary 응답 안에 activity.daily_analyses_last_7_days가 들어있음
     activity: {
       daily_analyses_last_7_days: [
         { date: '2026-03-24', count: 2 },
@@ -65,9 +63,7 @@ function AdminHome() {
   }, []);
   */
 
-  // 설계서 스펙: by_contract_type 은 배열
   const contractTypes = summary?.contracts?.by_contract_type || [];
-  // 설계서 스펙: activity.daily_analyses_last_7_days 에서 꺼냄
   const dailyList = summary?.activity?.daily_analyses_last_7_days || [];
   const maxCount = Math.max(...dailyList.map((d) => d.count), 1);
 

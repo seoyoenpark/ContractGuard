@@ -1,27 +1,13 @@
-// contract.mock.js
-// 실제 백엔드 대신 설계서(p.78~85, p.99~103) 스펙에 맞춘 더미 응답을 반환합니다.
-//
-// ▶ 사용법
-//   1) 이 파일을 src/api/contract.mock.js 로 둡니다.
-//   2) 테스트 기간 동안 아래 파일들의 import 경로를
-//      '../../api/contract' → '../../api/contract.mock' 로만 바꿔주세요.
-//        - src/pages/.../ContractInspect.jsx
-//        - src/pages/.../InspectionHistory.jsx
-//        - src/pages/.../InspectionDetail.jsx
-//   3) 실서버 연동 복귀 시 import 경로만 다시 '../../api/contract' 로 돌리면 됩니다.
-//
-// ▶ 반환 형태
-//   실제 axios 응답을 흉내내어 { status, data } 형태로 돌려줍니다.
-//   따라서 호출부의 res.data.xxx 접근 경로가 그대로 동작합니다.
+// 실서버 연동 복귀 시 import 경로만 다시 '../../api/contract'로 바꾸기
 
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// 폴링 횟수(분석 진행률 시뮬레이션용). analyzeContract 호출 시 0으로 초기화됨.
+// 폴링 횟수(분석 진행률 시뮬레이션용)
 let pollCount = 0;
 
 // ────────────────────────────────────────────────────────────────
 // 모듈 내부 저장소 - getContractList / getContractDetail / deleteContract
-// 가 공통으로 사용. 삭제 시 여기서 실제로 제거되어 목록에서 사라집니다.
+// 가 공통으로 사용. 삭제 시 여기서 실제로 제거되어 목록에서 사라짐
 // ────────────────────────────────────────────────────────────────
 const mockContracts = [
   // 1) 정규직 근로계약서 - high severity

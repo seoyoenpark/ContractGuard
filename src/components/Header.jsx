@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { logoutApi } from '../api/auth';
 import { logout, isLoggedIn, isAdmin } from '../utils/auth';
 import styles from './Header.module.css';
 
@@ -7,6 +8,11 @@ function Header() {
   const location = useLocation();
 
   const handleLogout = async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // 서버 실패는 무시 (토큰 만료 등)
+    }
     logout();
     navigate('/login');
   };

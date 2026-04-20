@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Sidebar from '../../components/Sidebar';
-import { getUserList, updateUserRole, deleteUser } from '../../api/admin';
+import {
+  getUserList,
+  getUserDetail,
+  updateUserRole,
+  deleteUser,
+} from '../../api/admin';
 import styles from './UserList.module.css';
 
 function UserList() {
@@ -18,13 +23,17 @@ function UserList() {
     { user_id: 8, name: '윤하늘', email: 'yoon@example.com', gender: 'FEMALE', role: 'USER' },
   ]);
 
+  // 상세 모달 상태
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
   /* ── API 연동 시 주석 해제 ──
   useEffect(() => {
     let cancelled = false;
     const fetchUsers = async () => {
       try {
         const res = await getUserList();
-        // 설계서 p.108: 응답은 { data: { users: [...] } } → axios wrap 뒤에는 res.data.data.users
+        // 설계서 p.108: 응답은 { data: { users: [...] } } → axios wrap 뒤 res.data.data.users
         if (!cancelled) setUsers(res.data.data?.users || []);
       } catch {
         console.error('사용자 목록 로딩 실패');
@@ -35,7 +44,39 @@ function UserList() {
   }, []);
   */
 
-  const handleRoleChange = async (userId, role) => {
+  // 행 클릭 → 설계서 p.109 GET /api/admin/users/:id 로 상세 조회
+  const handleRowClick = async (userId) => {
+    try {
+      setDetailLoading(true);
+      setSelectedUser({ loading: true });   // 모달은 즉시 열고 로딩 표기
+
+      /* ── API 연동 시 이 블록 사용 ──
+      const res = await getUserDetail(userId);
+      setSelectedUser(res.data.data);
+      */
+
+      // ── 더미 모드: 목록에서 기본 필드를 가져와 상세 필드(birthDate 등) 추가
+      const base = users.find((u) => u.user_id === userId);
+      if (base) {
+        setSelectedUser({
+          ...base,
+          birthDate: '2000-01-15',
+          created_at: '2026-03-01T10:00:00.000Z',
+          updated_at: '2026-03-02T08:00:00.000Z',
+        });
+      }
+    } catch {
+      alert('사용자 상세 정보 조회에 실패했습니다.');
+      setSelectedUser(null);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const closeDetailModal = () => setSelectedUser(null);
+
+  const handleRoleChange = async (userId, role, e) => {
+    e.stopPropagation();   // 행 클릭 전파 방지
     const label = role === 'ADMIN' ? '관리자' : '사용자';
     if (!window.confirm(`해당 회원을 ${label}로 변경하시겠습니까?`)) return;
     try {
@@ -48,7 +89,8 @@ function UserList() {
     }
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (userId, e) => {
+    e.stopPropagation();   // 행 클릭 전파 방지
     if (!window.confirm('해당 회원을 강제 탈퇴 처리하시겠습니까?')) return;
     try {
       await deleteUser(userId);
@@ -80,7 +122,11 @@ function UserList() {
               </thead>
               <tbody>
                 {users.map((user, idx) => (
-                  <tr key={user.user_id}>
+                  <tr
+                    key={user.user_id}
+                    className={styles.row}
+                    onClick={() => handleRowClick(user.user_id)}
+                  >
                     <td>{idx + 1}</td>
                     <td>{user.name}</td>
                     <td>{user.user_id}</td>
@@ -90,13 +136,13 @@ function UserList() {
                       <div className={styles.roleToggle}>
                         <button
                           className={`${styles.roleBtn} ${user.role === 'USER' ? styles.roleBtnActive : ''}`}
-                          onClick={() => handleRoleChange(user.user_id, 'USER')}
+                          onClick={(e) => handleRoleChange(user.user_id, 'USER', e)}
                         >
                           사용자
                         </button>
                         <button
                           className={`${styles.roleBtn} ${user.role === 'ADMIN' ? styles.roleBtnActive : ''}`}
-                          onClick={() => handleRoleChange(user.user_id, 'ADMIN')}
+                          onClick={(e) => handleRoleChange(user.user_id, 'ADMIN', e)}
                         >
                           관리자
                         </button>
@@ -105,7 +151,7 @@ function UserList() {
                     <td>
                       <button
                         className={styles.deleteBtn}
-                        onClick={() => handleDelete(user.user_id)}
+                        onClick={(e) => handleDelete(user.user_id, e)}
                       >
                         탈퇴
                       </button>
@@ -117,6 +163,90 @@ function UserList() {
           </div>
         </main>
       </div>
+
+      {/* 사용자 상세 정보 모달 */}
+      {selectedUser && (
+        <div className={styles.modalOverlay} onClick={closeDetailModal}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.closeBtn}
+              onClick={closeDetailModal}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+            <h3 className={styles.modalTitle}>사용자 상세 정보 조회</h3>
+
+            {detailLoading || selectedUser.loading ? (
+              <p className={styles.modalLoading}>불러오는 중…</p>
+            ) : (
+              <>
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>이름</span>
+                  <span className={styles.fieldValue}>{selectedUser.name || '-'}</span>
+                </div>
+
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>아이디</span>
+                  <span className={styles.fieldValue}>{selectedUser.user_id ?? '-'}</span>
+                </div>
+
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>이메일</span>
+                  <span className={styles.fieldValue}>{selectedUser.email || '-'}</span>
+                </div>
+
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>생년월일</span>
+                  <span className={styles.fieldValue}>{selectedUser.birthDate || '-'}</span>
+                </div>
+
+                {/* 성별: 읽기 전용 토글 (현재 값만 강조) */}
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>성별</span>
+                  <div className={styles.toggleRow}>
+                    <span
+                      className={`${styles.toggleItem} ${
+                        selectedUser.gender === 'FEMALE' ? styles.toggleActive : ''
+                      }`}
+                    >
+                      여성
+                    </span>
+                    <span
+                      className={`${styles.toggleItem} ${
+                        selectedUser.gender === 'MALE' ? styles.toggleActive : ''
+                      }`}
+                    >
+                      남성
+                    </span>
+                  </div>
+                </div>
+
+                {/* 역할: 읽기 전용 토글 (현재 값만 강조) */}
+                <div className={styles.fieldBox}>
+                  <span className={styles.fieldLabel}>역할</span>
+                  <div className={styles.toggleRow}>
+                    <span
+                      className={`${styles.toggleItem} ${
+                        selectedUser.role === 'USER' ? styles.toggleActive : ''
+                      }`}
+                    >
+                      사용자
+                    </span>
+                    <span
+                      className={`${styles.toggleItem} ${
+                        selectedUser.role === 'ADMIN' ? styles.toggleActive : ''
+                      }`}
+                    >
+                      관리자
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

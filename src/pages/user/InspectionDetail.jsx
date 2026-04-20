@@ -37,7 +37,7 @@ function InspectionDetail() {
 
   const toxicTopics = data?.toxic_assessment?.topics || [];
 
-  // 설계서 toxic_assessment.severity (high / medium / low) 메타
+  // toxic_assessment.severity (high / medium / low) 메타
   const severityMeta = (sev) => {
     switch (sev) {
       case 'high':   return { label: '위험', bannerClass: styles.bannerDanger };
@@ -110,8 +110,6 @@ function InspectionDetail() {
             <p className={styles.sectionTitle}>조항별 요약</p>
             <div className={styles.clauseList}>
               {data.clause_summaries?.map((clause) => {
-                // 백엔드가 clause 단위 toxic 플래그를 제공하지 않으므로
-                // toxic_assessment.topics에 포함되는지로 근사 판단
                 const isToxic = toxicTopics.includes(clause.topic);
                 return (
                   <div

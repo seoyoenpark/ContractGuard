@@ -17,7 +17,7 @@ const DONUT_COLORS = ['#fa8c73', '#f5c6bc'];
 function Stats() {
   const { section } = useParams();
 
-  /* ── 더미 데이터 (설계서 p.104/p.106/p.110 응답 스펙과 일치) ── */
+  /* ── 더미 데이터 ── */
   const [summary, setSummary] = useState({
     users: {
       total: 120,
@@ -25,7 +25,6 @@ function Stats() {
     },
     contracts: {
       analyzed_total: 42,
-      // 설계서 스펙: 배열 형태
       by_contract_type: [
         { contract_type: '근로계약서', count: 10 },
         { contract_type: '비밀유지계약서', count: 3 },
@@ -34,7 +33,6 @@ function Stats() {
         { contract_type: '저작권 양도 및 이용 허락 계약서', count: 2 },
       ],
     },
-    // 설계서 스펙: detection_events_total 한 개만 존재
     toxic_detection: { detection_events_total: 8 },
     activity: {
       daily_analyses_last_7_days: [
@@ -48,7 +46,6 @@ function Stats() {
 
   const [usage, setUsage] = useState({
     window: { days: 7, end_date: '2026-04-01' },
-    // 설계서 스펙: uploads / analyses_completed / toxic_clauses_detected 필드
     daily: [
       { date: '2026-03-24', uploads: 5,  analyses_completed: 20, toxic_clauses_detected: 6 },
       { date: '2026-03-25', uploads: 10, analyses_completed: 75, toxic_clauses_detected: 15 },
@@ -111,19 +108,18 @@ function Stats() {
     { name: '남성', value: summary.users?.by_gender?.MALE || 0 },
   ] : [];
 
-  // 계약서 유형별 막대 차트 데이터 (설계서 스펙: 배열 형태)
+  // 계약서 유형별 막대 차트 데이터
   const contractData = (summary?.contracts?.by_contract_type || []).map((row) => ({
     name: row.contract_type,
     건수: row.count,
   }));
 
   // 독소조항 탐지율 게이지
-  // 설계서에는 attempt_total 필드가 없으므로 analyzed_total(분석된 계약서 수)을 분모로 사용
   const analyzedTotal = summary?.contracts?.analyzed_total || 0;
   const toxicDetected = summary?.toxic_detection?.detection_events_total || 0;
   const toxicRate = analyzedTotal > 0 ? Math.round((toxicDetected / analyzedTotal) * 100) : 0;
 
-  // AI 사용량 - 날짜별 가로 막대 (설계서 스펙: analyses_completed 필드 사용)
+  // AI 사용량 - 날짜별 가로 막대
   const dailyData = (usage?.daily || []).map((d) => ({
     date: d.date?.slice(5) || '',
     분석요청횟수: d.analyses_completed || 0,
@@ -136,7 +132,7 @@ function Stats() {
     { name: 'LLM Llama', 호출횟수: usage.pipeline_invocations_in_window?.llm_llama || 0 },
   ] : [];
 
-  // 선택된 계약서 유형 정보 (contractData에서 직접 찾음)
+  // 선택된 계약서 유형 정보
   const selectedContractInfo = selectedType
     ? { type: selectedType, count: contractData.find((r) => r.name === selectedType)?.건수 ?? 0 }
     : null;
