@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { isAdmin } from '../utils/auth';
+import folderIcon from '../../src/assets/images/folder.png';
 import styles from './Sidebar.module.css';
 
 function Sidebar({ type = 'user' }) {
@@ -61,7 +62,7 @@ function Sidebar({ type = 'user' }) {
               className={`${styles.item} ${location.pathname === item.path ? styles.active : ''}`}
               onClick={() => navigate(item.path)}
             >
-              <span className={styles.folderIcon}>🗀</span>
+            <img src={folderIcon} alt="폴더 아이콘" className={styles.folderIcon} />
               {item.label}
             </button>
           ))}
