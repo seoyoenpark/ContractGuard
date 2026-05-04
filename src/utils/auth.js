@@ -43,3 +43,25 @@ export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('role');
 };
+
+// JWT 토큰에서 사용자 ID 추출
+export const getUserIdFromToken = () => {
+  const token = getToken();
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    // Base64URL → Base64 변환 후 UTF-8 안전하게 디코드
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    const decoded = JSON.parse(json);
+    // payload 필드명에 맞춰 수정 (1단계에서 확인한 키)
+    return decoded.sub ?? decoded.loginId ?? decoded.id ?? null;
+  } catch {
+    return null;
+  }
+};

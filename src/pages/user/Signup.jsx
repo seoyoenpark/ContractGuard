@@ -9,6 +9,7 @@ function Signup() {
     name: '', id: '', email: '', code: '',
     password: '', passwordConfirm: '',
     birthDate: '', gender: 'MALE',
+    job: '',
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
@@ -17,45 +18,8 @@ function Signup() {
   const [codeSent, setCodeSent] = useState(false);
   const [codeVerified, setCodeVerified] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [verificationToken, setVerificationToken] = useState('');
-
-  const handleVerifyCode = async () => {
-    if (!codeSent) { setError('먼저 인증코드를 받아주세요.'); return; }
-    if (!form.code) { setError('인증 코드를 입력해주세요.'); return; }
-    try {
-      const res = await signupVerify(form.email, form.code);
-      setVerificationToken(res.data.data.verification_token);
-      setCodeVerified(true);
-      setError('');
-    } catch {
-      setError('인증 코드가 올바르지 않거나 만료되었습니다.');
-    }
-  };
-
-  const handleSignup = async () => {
-    try {
-      const iso =
-        form.birthDate.length === 8
-          ? `${form.birthDate.slice(0, 4)}-${form.birthDate.slice(4, 6)}-${form.birthDate.slice(6, 8)}`
-          : form.birthDate;
-
-      await signupConfirm({
-        data: {                         
-          email: form.email,
-          verification_token: verificationToken,
-          name: form.name,
-          id: form.id,
-          password: form.password,
-          gender: form.gender,
-          birthDate: iso,
-          job: form.job || '',            
-        },
-      });
-      navigate('/login');
-    } catch {
-      setError('회원가입에 실패했습니다.');
-    }
-  };
 
   useEffect(() => {
     if (error) {
@@ -64,16 +28,91 @@ function Signup() {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(''), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSendCode = async () => {
-    if (!form.email) { setError('이메일을 입력해주세요.'); return; }
+    if (!form.email) { setError('이메일을 입력해주세요.'); setSuccess(''); return; }
     try {
       await signupRequest(form.email);
       setCodeSent(true);
       setError('');
+      setSuccess('인증 메일을 발송했습니다. 메일함을 확인해주세요.');
     } catch {
       setError('인증 코드 발송에 실패했습니다.');
+      setSuccess('');
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!codeSent) { setError('먼저 인증코드를 받아주세요.'); setSuccess(''); return; }
+    if (!form.code) { setError('인증 코드를 입력해주세요.'); setSuccess(''); return; }
+    try {
+      const res = await signupVerify(form.email, form.code);
+      setVerificationToken(res.data.data.verification_token);
+      setCodeVerified(true);
+      setError('');
+      setSuccess('이메일 인증이 완료되었습니다.');
+    } catch {
+      setError('인증 코드가 올바르지 않거나 만료되었습니다.');
+      setSuccess('');
+    }
+  };
+
+  const handleSignup = async () => {
+    
+    if (!form.name || !form.id || !form.email || !form.password || !form.birthDate) {
+      setError('모든 필수 항목을 입력해주세요.');
+      setSuccess('');
+      return;
+    }
+    
+    if (!codeVerified) {
+      setError('이메일 인증을 완료해주세요.');
+      setSuccess('');
+      return;
+    }
+    
+    if (form.password !== form.passwordConfirm) {
+      setError('비밀번호가 일치하지 않습니다.');
+      setSuccess('');
+      return;
+    }
+    
+    if (!agreeTerms || !agreePrivacy || !agreeFile || !agreeLaw) {
+      setError('필수 약관에 모두 동의해주세요.');
+      setSuccess('');
+      return;
+    }
+
+    try {
+      const iso =
+        form.birthDate.length === 8
+          ? `${form.birthDate.slice(0, 4)}-${form.birthDate.slice(4, 6)}-${form.birthDate.slice(6, 8)}`
+          : form.birthDate;
+
+      await signupConfirm({
+        data: {
+          email: form.email,
+          verification_token: verificationToken,
+          name: form.name,
+          id: form.id,
+          password: form.password,
+          gender: form.gender,
+          birthDate: iso,
+          job: form.job || '',
+        },
+      });
+      navigate('/login');
+    } catch {
+      setError('회원가입에 실패했습니다.');
+      setSuccess('');
     }
   };
 
@@ -83,6 +122,7 @@ function Signup() {
       <div className={styles.card}>
         <div className={styles.scrollArea}>
           {error && <div className={styles.toast}>{error}</div>}
+          {success && <div className={styles.success}>{success}</div>}
 
           <div className={styles.fieldBox}>
             <span className={styles.fieldLabel}>이름</span>
@@ -108,7 +148,6 @@ function Signup() {
               <input className={styles.fieldInput} name="code" value={form.code} onChange={handleChange} />
               <button className={styles.codeBtn} onClick={handleVerifyCode} type="button">인증하기</button>
             </div>
-            {codeVerified && <p className={styles.success}>인증이 완료되었습니다.</p>}
           </div>
 
           <div className={styles.fieldBox}>
@@ -140,6 +179,11 @@ function Signup() {
                 type="button"
               >남성</button>
             </div>
+          </div>
+
+          <div className={styles.fieldBox}>
+            <span className={styles.fieldLabel}>직업</span>
+            <input className={styles.fieldInput} name="job" value={form.job} onChange={handleChange} placeholder="예: 학생, 회사원" />
           </div>
 
           <hr className={styles.hr} />

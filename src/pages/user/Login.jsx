@@ -11,7 +11,7 @@ function Login() {
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-  if (!id || !password) { setError('아이디와 비밀번호를 입력해주세요.'); return; }
+    if (!id || !password) { setError('아이디와 비밀번호를 입력해주세요.'); return; }
   try {
     const res = await login(id, password);
     const { access_token, refresh_token } = res.data.data;

@@ -1,20 +1,20 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { logoutApi } from '../api/auth';
-import { logout, isLoggedIn, isAdmin } from '../utils/auth';
+import { logout, isLoggedIn, isAdmin, getUserIdFromToken } from '../utils/auth';
 import styles from './Header.module.css';
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const userId = getUserIdFromToken();
 
   const handleLogout = async () => {
     try {
       await logoutApi();
     } catch {
-      // 서버 실패는 무시 (토큰 만료 등)
     }
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleLogoClick = () => {
@@ -31,6 +31,15 @@ function Header() {
         Contract Guard
       </span>
       <div className={styles.right}>
+        {isLoggedIn() ? (
+          <button className={styles.btn}>
+          {userId ?? '회원'}님
+          </button>
+        ) : (
+          <button className={styles.btn} onClick={() => navigate('/Signup')}>
+            회원가입
+          </button>
+        )}
         {isLoggedIn() ? (
           <button className={styles.btn} onClick={handleLogout}>
             로그아웃
